@@ -130,13 +130,12 @@ public class GDImage {
         }
 
         var ptr : gdImagePtr?
-        let lastComp = (path as NSString).lastPathComponent
         var triedJpg = false
         var triedPng = false
-        if lastComp.hasSuffix("jpg") || lastComp.hasSuffix("jpeg") {
+        if path.hasSuffix("jpg") || path.hasSuffix("jpeg") {
             ptr = gdImageCreateFromJpeg(input)
             triedJpg = true
-        } else if lastComp.hasSuffix("png") {
+        } else if path.hasSuffix("png") {
             ptr = gdImageCreateFromPng(input)
             triedPng = true
         }
@@ -163,8 +162,21 @@ public class GDImage {
 
     @discardableResult
     public func write(to path:String, quality:Int = 100, overwrite:Bool = false) -> Bool {
-        let ext = (path as NSString).pathExtension
-        guard ext == "png" || ext == "jpeg" || ext == "jpg" else {
+        let isJpg:Bool
+        let isPng:Bool
+
+        if path.hasSuffix("png") {
+            isJpg = false
+            isPng = true
+        } else if path.hasSuffix("jpg") || path.hasSuffix("jpeg") {
+            isJpg = true
+            isPng = false
+        } else {
+            isJpg = false
+            isPng = false
+        }
+
+        guard isPng || isJpg else {
             return false
         }
 
@@ -181,7 +193,7 @@ public class GDImage {
             fclose(output)
         }
 
-        if ext == "png" {
+        if isPng {
             gdImageSaveAlpha(self.imagePtr, 1)
             gdImagePng(self.imagePtr, output)
         } else {
