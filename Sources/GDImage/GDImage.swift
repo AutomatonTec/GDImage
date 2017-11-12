@@ -110,18 +110,18 @@ public class GDImage {
         gdImageDestroy(self.imagePtr)
     }
 
-    init(ptr:gdImagePtr) {
+    public init(ptr:gdImagePtr) {
         self.imagePtr = ptr
     }
 
-    init?(size:GDSize) {
+    public convenience init?(size:GDSize) {
         guard let ptr = gdImageCreateTrueColor(size.width, size.height) else {
             return nil
         }
-        self.imagePtr = ptr
+        self.init(ptr: ptr)
     }
 
-    init?(path:String) {
+    public convenience init?(path:String) {
         guard let input = fopen(path, "rb") else {
             return nil
         }
@@ -158,7 +158,7 @@ public class GDImage {
         guard let imgPtr = ptr else {
             return nil
         }
-        self.imagePtr = imgPtr
+        self.init(ptr: imgPtr)
     }
 
     @discardableResult
