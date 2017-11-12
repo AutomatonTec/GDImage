@@ -9,66 +9,66 @@
 import Foundation
 
 public struct GDPoint {
-    var x: Int32
-    var y: Int32
+    public var x: Int32
+    public var y: Int32
 
-    init(x: Int32, y: Int32) {
+    public init(x: Int32, y: Int32) {
         self.x = x
         self.y = y
     }
 }
 
 public struct GDSize {
-    var width: Int32
-    var height: Int32
+    public var width: Int32
+    public var height: Int32
 
-    init(width: Int32, height: Int32) {
+    public init(width: Int32, height: Int32) {
         self.width = width
         self.height = height
     }
 }
 
 public struct GDRect {
-    var origin : GDPoint
-    var size : GDSize
+    public var origin : GDPoint
+    public var size : GDSize
 
-    init(origin:GDPoint, size:GDSize) {
+    public init(origin:GDPoint, size:GDSize) {
         self.origin = origin
         self.size = size
     }
 
-    var rect : gdRect {
+    public var rect : gdRect {
         return gdRect(x: self.origin.x, y: self.origin.y, width: self.size.width, height: self.size.height)
     }
 
-    var p1 : GDPoint {
+    public var p1 : GDPoint {
         return self.origin
     }
-    var p2 : GDPoint {
+    public var p2 : GDPoint {
         return GDPoint(x: self.origin.x + self.size.width, y: self.origin.y + self.size.height)
     }
 }
 
 public class GDColor {
-    var red: Double
-    var green: Double
-    var blue: Double
-    var alpha: Double
+    public var red: Double
+    public var green: Double
+    public var blue: Double
+    public var alpha: Double
 
-    init(red: Double, green: Double, blue: Double, alpha: Double) {
+    public init(red: Double, green: Double, blue: Double, alpha: Double) {
         self.red = red
         self.green = green
         self.blue = blue
         self.alpha = alpha
     }
-    init(color:Int32) {
+    public init(color:Int32) {
         self.alpha   = 1 - (Double((color >> 24) & 0xFF) / 127)
         self.red     = Double((color >> 16) & 0xFF) / 255
         self.green   = Double((color >> 8) & 0xFF) / 255
         self.blue    = Double(color & 0xFF) / 255
     }
 
-    func color(for image:GDImage) -> Int32 {
+    public func color(for image:GDImage) -> Int32 {
         return gdImageColorAllocateAlpha(
             image.imagePtr,
             Int32(self.red * 255.0),
@@ -79,11 +79,11 @@ public class GDColor {
     }
 
 
-    static let red = GDColor(red: 1, green: 0, blue: 0, alpha: 1)
-    static let green = GDColor(red: 0, green: 1, blue: 0, alpha: 1)
-    static let blue = GDColor(red: 0, green: 0, blue: 1, alpha: 1)
-    static let black = GDColor(red: 0, green: 0, blue: 0, alpha: 1)
-    static let white = GDColor(red: 1, green: 1, blue: 1, alpha: 1)
+    public static let red = GDColor(red: 1, green: 0, blue: 0, alpha: 1)
+    public static let green = GDColor(red: 0, green: 1, blue: 0, alpha: 1)
+    public static let blue = GDColor(red: 0, green: 0, blue: 1, alpha: 1)
+    public static let black = GDColor(red: 0, green: 0, blue: 0, alpha: 1)
+    public static let white = GDColor(red: 1, green: 1, blue: 1, alpha: 1)
 }
 
 public enum GDGravity {
@@ -101,8 +101,8 @@ public enum GDGravity {
 
 public class GDImage {
 
-    var imagePtr : gdImagePtr
-    var size : GDSize {
+    public var imagePtr : gdImagePtr
+    public var size : GDSize {
         return GDSize(width: self.imagePtr.pointee.sx, height: self.imagePtr.pointee.sy)
     }
 
@@ -162,7 +162,7 @@ public class GDImage {
     }
 
     @discardableResult
-    func write(to path:String, quality:Int = 100, overwrite:Bool = false) -> Bool {
+    public func write(to path:String, quality:Int = 100, overwrite:Bool = false) -> Bool {
         let ext = (path as NSString).pathExtension
         guard ext == "png" || ext == "jpeg" || ext == "jpg" else {
             return false
@@ -191,25 +191,25 @@ public class GDImage {
         return true
     }
 
-    func copy(from:GDImage) {
+    public func copy(from:GDImage) {
         gdImageCopy(self.imagePtr, from.imagePtr, 0, 0, 0, 0, from.size.width, from.size.height)
     }
 
-    func get(pixel:GDPoint) -> GDColor {
+    public func get(pixel:GDPoint) -> GDColor {
         return GDColor(color: gdImageGetTrueColorPixel(self.imagePtr, pixel.x, pixel.y))
     }
 
-    func fill(with color:GDColor) {
+    public func fill(with color:GDColor) {
         self.fill(rectangle: GDRect(origin:GDPoint(x: 0, y: 0), size:self.size), color: color)
     }
 
-    func fill(rectangle:GDRect, color:GDColor) {
+    public func fill(rectangle:GDRect, color:GDColor) {
         let p1 = rectangle.p1
         let p2 = rectangle.p2
         gdImageFilledRectangle(self.imagePtr, p1.x, p1.y, p2.x, p2.y, color.color(for: self))
     }
 
-    func resizedTo(width: Int32, height: Int32, applySmoothing: Bool = true) -> GDImage? {
+    public func resizedTo(width: Int32, height: Int32, applySmoothing: Bool = true) -> GDImage? {
         let currentSize = self.size
         guard currentSize.width != width || currentSize.height != height else { return self }
 
@@ -223,7 +223,7 @@ public class GDImage {
         return GDImage(ptr: output)
     }
 
-    func resizedTo(width: Int32, applySmoothing: Bool = true) -> GDImage? {
+    public func resizedTo(width: Int32, applySmoothing: Bool = true) -> GDImage? {
         let currentSize = self.size
         guard currentSize.width != width else { return self }
 
@@ -240,14 +240,14 @@ public class GDImage {
         return GDImage(ptr: output)
     }
 
-    func resizedTo(maxWidth:Int32, applySmoothing: Bool = true) -> GDImage? {
+    public func resizedTo(maxWidth:Int32, applySmoothing: Bool = true) -> GDImage? {
         if self.size.width > maxWidth {
             return self.resizedTo(width: maxWidth, applySmoothing:applySmoothing)
         }
         return self
     }
 
-    func resizedTo(height: Int32, applySmoothing: Bool = true) -> GDImage? {
+    public func resizedTo(height: Int32, applySmoothing: Bool = true) -> GDImage? {
         let currentSize = self.size
         guard currentSize.height != height else { return self }
 
@@ -265,7 +265,7 @@ public class GDImage {
     }
 
 
-    func crop(to:GDRect) -> GDImage? {
+    public func crop(to:GDRect) -> GDImage? {
         var box = to.rect
         guard let output = gdImageCrop(self.imagePtr, &box) else {
             return nil
@@ -273,7 +273,7 @@ public class GDImage {
         return GDImage(ptr: output)
     }
 
-    func crop(x:Int32, y:Int32, width:Int32, height:Int32) -> GDImage? {
+    public func crop(x:Int32, y:Int32, width:Int32, height:Int32) -> GDImage? {
         var box = gdRect(x: x, y: y, width: width, height: height)
         guard let output = gdImageCrop(self.imagePtr, &box) else {
             return nil
@@ -281,7 +281,7 @@ public class GDImage {
         return GDImage(ptr: output)
     }
 
-    func squared(_ gravity:GDGravity = .middle) -> GDImage? {
+    public func squared(_ gravity:GDGravity = .middle) -> GDImage? {
         let size = self.size
         guard size.width != size.height else { return self }    // nothing to do, already squared
         let side = min(size.width, size.height)
