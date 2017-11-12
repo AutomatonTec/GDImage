@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct GDPoint {
+public struct GDPoint {
     var x: Int32
     var y: Int32
 
@@ -18,7 +18,7 @@ struct GDPoint {
     }
 }
 
-struct GDSize {
+public struct GDSize {
     var width: Int32
     var height: Int32
 
@@ -28,7 +28,7 @@ struct GDSize {
     }
 }
 
-struct GDRect {
+public struct GDRect {
     var origin : GDPoint
     var size : GDSize
 
@@ -49,7 +49,7 @@ struct GDRect {
     }
 }
 
-class GDColor {
+public class GDColor {
     var red: Double
     var green: Double
     var blue: Double
@@ -86,7 +86,7 @@ class GDColor {
     static let white = GDColor(red: 1, green: 1, blue: 1, alpha: 1)
 }
 
-enum GDGravity {
+public enum GDGravity {
     case north
     case south
     case east
@@ -99,7 +99,7 @@ enum GDGravity {
 }
 
 
-class GDImage {
+public class GDImage {
 
     var imagePtr : gdImagePtr
     var size : GDSize {
